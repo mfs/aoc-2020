@@ -28,5 +28,21 @@ fn main() -> Result<()> {
     }
     */
 
+    /* process stdin using split and regex
+    use std::io::{self, Read};
+    use regex::Regex;
+    let mut s = String::new();
+    io::stdin().lock().read_to_string(&mut s)?;
+
+    let re = Regex::new(r"([LR])(\d+)")?;
+
+    for e in s.split(",") {
+        if let Some(caps) = re.captures(e) {
+            let r = &caps[1];
+            let d: i64 = caps[2].parse()?;
+        }
+    }
+    */
+
     Ok(())
 }
