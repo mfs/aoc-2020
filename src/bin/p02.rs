@@ -1,6 +1,6 @@
-use anyhow::{Result, anyhow};
-use std::io::{self, BufRead};
+use anyhow::{anyhow, Result};
 use regex::Regex;
+use std::io::{self, BufRead};
 
 fn main() -> Result<()> {
     let re = Regex::new(r"(\d+)-(\d+) ([a-z]): ([a-z]+)")?;
@@ -42,4 +42,3 @@ fn is_valid_p2(pw: &Password) -> bool {
 fn process(passwords: &Vec<Password>, f: &dyn Fn(&Password) -> bool) -> usize {
     passwords.iter().filter(|x| f(x)).count()
 }
-
