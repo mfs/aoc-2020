@@ -4,7 +4,6 @@ use std::io::{self, BufRead};
 type Trees = Vec<Vec<bool>>;
 
 fn main() -> Result<()> {
-
     let mut trees: Trees = vec![];
 
     for line in io::stdin().lock().lines() {
