@@ -10,8 +10,8 @@ fn main() -> Result<()> {
         trees.push(line?.chars().map(|c| c == '#').collect());
     }
 
-    let width: usize = trees[0].len();
-    let height: usize = trees.len();
+    let width = trees[0].len();
+    let height = trees.len();
 
     println!("Part 1 = {}", slope(&trees, 3, 1, width, height));
 
