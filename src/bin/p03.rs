@@ -25,11 +25,11 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn slope(trees: &Trees, xs: usize, ys: usize, w: usize, h: usize) -> usize {
-    let end = h / ys - 1;
+fn slope(trees: &Trees, dx: usize, dy: usize, w: usize, h: usize) -> usize {
+    let end = h / dy - 1;
 
     (0..end)
-        .map(|n| (n * xs, n * ys))
+        .map(|n| (n * dx, n * dy))
         .filter(|&(x, y)| trees[y][x % w])
         .count()
 }
