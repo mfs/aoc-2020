@@ -3,7 +3,7 @@ use std::io::{self, Read};
 use regex::Regex;
 use std::collections::HashMap;
 
-type Fields<'a> = [(&'a str, regex::Regex, fn(&regex::Captures) -> bool); 7];
+type Fields<'a> = [(&'a str, regex::Regex, fn(&str, &regex::Captures) -> bool); 7];
 
 fn main() -> Result<()> {
     let mut s = String::new();
@@ -24,9 +24,9 @@ fn main() -> Result<()> {
     }
 
     let fields: Fields = [
-        ("byr", Regex::new(r"^\d{4}$")?, validate_byr),
-        ("iyr", Regex::new(r"^\d{4}$")?, validate_iyr),
-        ("eyr", Regex::new(r"^\d{4}$")?, validate_eyr),
+        ("byr", Regex::new(r"^\d{4}$")?, validate_year),
+        ("iyr", Regex::new(r"^\d{4}$")?, validate_year),
+        ("eyr", Regex::new(r"^\d{4}$")?, validate_year),
         ("hgt", Regex::new(r"^(\d+)(cm|in)$")?, validate_hgt),
         ("hcl", Regex::new(r"^#[0-9a-f]{6}$")?, validate),
         ("ecl", Regex::new(r"^amb|blu|brn|gry|grn|hzl|oth$")?, validate),
@@ -40,29 +40,22 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn validate(_: &regex::Captures) -> bool {
+fn validate(_: &str, _: &regex::Captures) -> bool {
     true
 }
 
-fn validate_byr(cap: &regex::Captures) -> bool {
+fn validate_year(field: &str, cap: &regex::Captures) -> bool {
     let year: u64 = cap[0].parse().unwrap();
 
-    year >= 1920 && year <= 2002
+    match field {
+        "byr" => year >= 1920 && year <= 2002,
+        "iyr" => year >= 2010 && year <= 2020,
+        "eyr" => year >= 2020 && year <= 2030,
+        _ => panic!(),
+    }
 }
 
-fn validate_iyr(cap: &regex::Captures) -> bool {
-    let year: u64 = cap[0].parse().unwrap();
-
-    year >= 2010 && year <= 2020
-}
-
-fn validate_eyr(cap: &regex::Captures) -> bool {
-    let year: u64 = cap[0].parse().unwrap();
-
-    year >= 2020 && year <= 2030
-}
-
-fn validate_hgt(cap: &regex::Captures) -> bool {
+fn validate_hgt(_: &str, cap: &regex::Captures) -> bool {
     let h: u64 = cap[1].parse().unwrap();
 
     (&cap[2] == "cm" && h >= 150 && h <= 193) || (&cap[2] == "in" && h >= 59 && h <= 76)
@@ -79,7 +72,7 @@ fn is_valid(p: &HashMap<String, String>, fields: &Fields , strict: bool) -> bool
         }
 
         if let Some(cap) = re.captures(&p[k.to_owned()]) {
-            if !is_valid_fn(&cap) {
+            if !is_valid_fn(k, &cap) {
                 return false;
             }
         } else {
