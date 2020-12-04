@@ -3,6 +3,8 @@ use std::io::{self, Read};
 use regex::Regex;
 use std::collections::HashMap;
 
+type Fields<'a> = [(&'a str, regex::Regex, fn(&regex::Captures) -> bool); 7];
+
 fn main() -> Result<()> {
     let mut s = String::new();
     io::stdin().lock().read_to_string(&mut s)?;
@@ -21,9 +23,19 @@ fn main() -> Result<()> {
         passports.push(passport);
     }
 
-    println!("Part 1 = {}", passports.iter().filter(|x| is_valid(x, false)).count());
+    let fields: Fields = [
+        ("byr", Regex::new(r"^\d{4}$")?, validate_byr),
+        ("iyr", Regex::new(r"^\d{4}$")?, validate_iyr),
+        ("eyr", Regex::new(r"^\d{4}$")?, validate_eyr),
+        ("hgt", Regex::new(r"^(\d+)(cm|in)$")?, validate_hgt),
+        ("hcl", Regex::new(r"^#[0-9a-f]{6}$")?, validate),
+        ("ecl", Regex::new(r"^amb|blu|brn|gry|grn|hzl|oth$")?, validate),
+        ("pid", Regex::new(r"^\d{9}$")?, validate)
+    ];
 
-    println!("Part 2 = {}", passports.iter().filter(|x| is_valid(x, true)).count());
+    println!("Part 1 = {}", passports.iter().filter(|x| is_valid(x, &fields, false)).count());
+
+    println!("Part 2 = {}", passports.iter().filter(|x| is_valid(x, &fields, true)).count());
 
     Ok(())
 }
@@ -56,17 +68,7 @@ fn validate_hgt(cap: &regex::Captures) -> bool {
     (&cap[2] == "cm" && h >= 150 && h <= 193) || (&cap[2] == "in" && h >= 59 && h <= 76)
 }
 
-fn is_valid(p: &HashMap<String, String>, strict: bool) -> bool {
-    let fields: [(&str, regex::Regex, fn(&regex::Captures) -> bool); 7] = [
-        ("byr", Regex::new(r"^\d{4}$").unwrap(), validate_byr),
-        ("iyr", Regex::new(r"^\d{4}$").unwrap(), validate_iyr),
-        ("eyr", Regex::new(r"^\d{4}$").unwrap(), validate_eyr),
-        ("hgt", Regex::new(r"^(\d+)(cm|in)$").unwrap(), validate_hgt),
-        ("hcl", Regex::new(r"^#[0-9a-f]{6}$").unwrap(), validate),
-        ("ecl", Regex::new(r"^amb|blu|brn|gry|grn|hzl|oth$").unwrap(), validate),
-        ("pid", Regex::new(r"^\d{9}$").unwrap(), validate)
-    ];
-
+fn is_valid(p: &HashMap<String, String>, fields: &Fields , strict: bool) -> bool {
     for (k, re, is_valid_fn) in fields.iter() {
         if !p.contains_key(k.to_owned()) {
             return false
