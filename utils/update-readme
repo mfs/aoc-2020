@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+echo "# Advent of Code"
+echo
+tokei --files --type rust --sort files --columns 80 src/bin/p??.rs | sed 's/^/    /'

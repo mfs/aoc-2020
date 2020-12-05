@@ -28,9 +28,9 @@ fn main() -> Result<()> {
         ("iyr", Regex::new(r"^\d{4}$")?, validate_year),
         ("eyr", Regex::new(r"^\d{4}$")?, validate_year),
         ("hgt", Regex::new(r"^(\d+)(cm|in)$")?, validate_hgt),
-        ("hcl", Regex::new(r"^#[0-9a-f]{6}$")?, validate),
-        ("ecl", Regex::new(r"^amb|blu|brn|gry|grn|hzl|oth$")?, validate),
-        ("pid", Regex::new(r"^\d{9}$")?, validate)
+        ("hcl", Regex::new(r"^#[0-9a-f]{6}$")?, |_, _| true),
+        ("ecl", Regex::new(r"^amb|blu|brn|gry|grn|hzl|oth$")?, |_, _| true),
+        ("pid", Regex::new(r"^\d{9}$")?, |_, _| true )
     ];
 
     println!("Part 1 = {}", passports.iter().filter(|x| is_valid(x, &fields, false)).count());
@@ -38,10 +38,6 @@ fn main() -> Result<()> {
     println!("Part 2 = {}", passports.iter().filter(|x| is_valid(x, &fields, true)).count());
 
     Ok(())
-}
-
-fn validate(_: &str, _: &regex::Captures) -> bool {
-    true
 }
 
 fn validate_year(field: &str, cap: &regex::Captures) -> bool {
