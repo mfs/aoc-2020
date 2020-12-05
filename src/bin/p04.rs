@@ -47,7 +47,7 @@ fn validate_year(field: &str, cap: &regex::Captures) -> bool {
         "byr" => year >= 1920 && year <= 2002,
         "iyr" => year >= 2010 && year <= 2020,
         "eyr" => year >= 2020 && year <= 2030,
-        _ => panic!(),
+        _ => false,
     }
 }
 
@@ -63,16 +63,14 @@ fn is_valid(p: &HashMap<String, String>, fields: &Fields , strict: bool) -> bool
             return false
         }
 
-        if !strict {
-            continue;
-        }
-
-        if let Some(cap) = re.captures(&p[k.to_owned()]) {
-            if !is_valid_fn(k, &cap) {
+        if strict {
+            if let Some(cap) = re.captures(&p[k.to_owned()]) {
+                if !is_valid_fn(k, &cap) {
+                    return false;
+                }
+            } else {
                 return false;
             }
-        } else {
-            return false;
         }
     }
 
