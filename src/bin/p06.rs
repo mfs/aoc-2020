@@ -47,13 +47,11 @@ fn p2(groups: &Groups) -> usize {
     let mut count = 0;
 
     for group in groups {
-        let mut sum = 0;
         for c in 'a'..='z' {
             if group.iter().all(|x| x.contains(&c)) {
-                sum += 1;
+                count += 1;
             }
         }
-        count += sum;
     }
 
     count
