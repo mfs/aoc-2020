@@ -1,5 +1,5 @@
-use std::path::Path;
 use anyhow::Result;
+use std::path::Path;
 
 fn main() -> Result<()> {
     let mut times = vec![];

@@ -1,9 +1,8 @@
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 use std::io::{self, BufRead};
 use std::iter::Iterator;
 
 fn main() -> Result<()> {
-
     let mut seats: Vec<u64> = vec![];
 
     for line in io::stdin().lock().lines() {
@@ -24,8 +23,8 @@ fn main() -> Result<()> {
 fn bsp(mut min: u64, mut max: u64, chars: &mut dyn Iterator<Item = char>) -> u64 {
     for c in chars {
         match c {
-            'F'|'L' => { max = (max + min) / 2 },
-            'B'|'R' => { min = (max + min) / 2 + 1 },
+            'F' | 'L' => max = (max + min) / 2,
+            'B' | 'R' => min = (max + min) / 2 + 1,
             _ => panic!(),
         }
     }

@@ -1,10 +1,9 @@
 use anyhow::Result;
-use std::io::{self, BufRead};
-use std::collections::{HashMap, HashSet};
 use regex::Regex;
+use std::collections::{HashMap, HashSet};
+use std::io::{self, BufRead};
 
 fn main() -> Result<()> {
-
     let mut bags = HashMap::new(); // maps outer bag to vec of (inner bag, count)
     let mut bags_reverse = vec![]; // maps inner bag to outer bag vec of (inner, outer)
 
@@ -50,4 +49,3 @@ fn count_bags(bags: &HashMap<String, Vec<(String, u64)>>, desc: &str) -> u64 {
         .map(|(col, n)| n * (count_bags(&bags, col) + 1))
         .sum()
 }
-
