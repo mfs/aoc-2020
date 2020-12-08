@@ -1,6 +1,7 @@
 use anyhow::Result;
 use std::io::{self, BufRead};
 use std::collections::HashSet;
+use std::default::Default;
 
 #[derive(Debug, Clone, Copy)]
 enum Instruction {
@@ -9,6 +10,7 @@ enum Instruction {
     Nop(i64),
 }
 
+#[derive(Debug, Default)]
 struct CPU {
     ip: i64,
     acc: i64,
@@ -16,10 +18,7 @@ struct CPU {
 
 impl CPU {
     fn new() -> Self {
-        CPU {
-            ip: 0,
-            acc: 0,
-        }
+        Default::default()
     }
 
     fn step(&mut self, instructions: &Vec<Instruction>) {
