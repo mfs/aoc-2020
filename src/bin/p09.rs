@@ -20,7 +20,6 @@ const SIZE: usize = 25;
 
 fn p1(numbers: &Vec<u64>) -> u64 {
     'outer: for window in numbers.windows(SIZE + 1) {
-
         let preamble = &window[..SIZE];
         let number = window[SIZE];
 
@@ -49,4 +48,3 @@ fn p2(numbers: &Vec<u64>, target: u64) -> u64 {
 
     0
 }
-

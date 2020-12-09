@@ -1,7 +1,7 @@
 use anyhow::Result;
-use std::io::{self, BufRead};
 use std::collections::HashSet;
 use std::default::Default;
+use std::io::{self, BufRead};
 
 #[derive(Debug, Clone, Copy)]
 enum Instruction {
@@ -25,7 +25,7 @@ impl CPU {
         match instructions[self.ip as usize] {
             Instruction::Acc(x) => self.acc += x,
             Instruction::Jmp(x) => self.ip += x - 1,
-            Instruction::Nop(_) => { },
+            Instruction::Nop(_) => {}
         }
         self.ip += 1;
     }
