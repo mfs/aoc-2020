@@ -1,7 +1,7 @@
 use anyhow::Result;
-use std::io::{self, Read};
 use regex::Regex;
 use std::collections::HashMap;
+use std::io::{self, Read};
 
 type Fields<'a> = [(&'a str, regex::Regex, fn(&str, &regex::Captures) -> bool); 7];
 
@@ -30,12 +30,22 @@ fn main() -> Result<()> {
         ("hgt", Regex::new(r"^(\d+)(cm|in)$")?, validate_hgt),
         ("hcl", Regex::new(r"^#[0-9a-f]{6}$")?, |_, _| true),
         ("ecl", Regex::new(r"^amb|blu|brn|gry|grn|hzl|oth$")?, |_, _| true),
-        ("pid", Regex::new(r"^\d{9}$")?, |_, _| true )
+        ("pid", Regex::new(r"^\d{9}$")?, |_, _| true),
     ];
 
-    println!("Part 1 = {}", passports.iter().filter(|x| is_valid(x, &fields, false)).count());
+    let p1 = passports
+        .iter()
+        .filter(|x| is_valid(x, &fields, false))
+        .count();
 
-    println!("Part 2 = {}", passports.iter().filter(|x| is_valid(x, &fields, true)).count());
+    println!("Part 1 = {}", p1);
+
+    let p2 = passports
+            .iter()
+            .filter(|x| is_valid(x, &fields, true))
+            .count();
+
+    println!("Part 2 = {}", p2);
 
     Ok(())
 }
@@ -57,10 +67,10 @@ fn validate_hgt(_: &str, cap: &regex::Captures) -> bool {
     (&cap[2] == "cm" && h >= 150 && h <= 193) || (&cap[2] == "in" && h >= 59 && h <= 76)
 }
 
-fn is_valid(p: &HashMap<String, String>, fields: &Fields , strict: bool) -> bool {
+fn is_valid(p: &HashMap<String, String>, fields: &Fields, strict: bool) -> bool {
     for (k, re, is_valid_fn) in fields.iter() {
         if !p.contains_key(k.to_owned()) {
-            return false
+            return false;
         }
 
         if strict {
