@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
-use std::io::{self, BufRead};
 use std::collections::HashMap;
+use std::io::{self, BufRead};
 
 fn main() -> Result<()> {
     let mut adapters: Vec<i64> = vec![];
@@ -41,11 +41,10 @@ fn p2(adapters: &Vec<i64>) -> HashMap<i64, i64> {
     for n in adapters {
         for i in 1..4 {
             if adapters.contains(&(n + i)) {
-                *paths.entry(n+i).or_insert(0) += paths[n];
+                *paths.entry(n + i).or_insert(0) += paths[n];
             }
         }
     }
 
     paths
 }
-
