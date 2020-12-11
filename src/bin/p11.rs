@@ -5,7 +5,6 @@ use std::collections::HashMap;
 type Map = HashMap<(i64, i64), char>;
 
 fn main() -> Result<()> {
-
     let mut map = HashMap::new();
 
     for (y, line) in io::stdin().lock().lines().enumerate() {
