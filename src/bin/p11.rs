@@ -38,7 +38,7 @@ fn step(map: &Map, occupied: i64, ray: bool) -> Map {
     let mut new = HashMap::new();
 
     for (&(x, y), &c) in map {
-        let n = count_occupied_neighbours(x, y, &map, ray);
+        let n = count_occupied_neighbours(x, y, map, ray);
         if c == 'L' && n == 0 {
             new.insert((x, y), '#');
         } else if c == '#' && n >= occupied {
