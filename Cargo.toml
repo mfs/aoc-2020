@@ -4,9 +4,13 @@ version = "0.1.0"
 authors = ["Mike Sampson <mike@sambodata.com>"]
 edition = "2018"
 
+[profile.release]
+debug = true
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 anyhow = "1.0"
 regex = "1.4"
 time = "0.2.23"
+

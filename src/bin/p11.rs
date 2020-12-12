@@ -1,16 +1,13 @@
 use anyhow::Result;
 use std::io::{self, BufRead};
-use std::collections::HashMap;
 
-type Map = HashMap<(i64, i64), char>;
+type Map = Vec<Vec<char>>;
 
 fn main() -> Result<()> {
-    let mut map = HashMap::new();
+    let mut map: Map = vec![];
 
-    for (y, line) in io::stdin().lock().lines().enumerate() {
-        for (x, c) in line?.chars().enumerate() {
-            map.insert((x as i64, y as i64), c);
-        }
+    for line in io::stdin().lock().lines() {
+        map.push(line?.chars().collect());
     }
 
     println!("Part 1 = {}", process(&map, 4, false));
@@ -21,36 +18,38 @@ fn main() -> Result<()> {
 }
 
 fn process(map: &Map, occupied: i64, ray: bool) -> usize {
-    let mut map = map.clone();
+    let mut primary = map.clone();
+    let mut secondary = map.clone();
 
     loop {
-        let new = step(&map, occupied, ray);
+        step(&primary, &mut secondary, occupied, ray);
 
-        if map == new {
-            return map.values().filter(|&x| *x == '#').count();
+        if primary == secondary {
+            return primary.iter().flatten().filter(|&x| x == &'#').count();
         }
 
-        map = new;
+        let tmp = primary;
+        primary = secondary;
+        secondary = tmp;
     }
 }
 
-fn step(map: &Map, occupied: i64, ray: bool) -> Map {
-    let mut new = HashMap::new();
-
-    for (&(x, y), &c) in map {
-        let n = count_occupied_neighbours(x, y, map, ray);
-        if c == 'L' && n == 0 {
-            new.insert((x, y), '#');
-        } else if c == '#' && n >= occupied {
-            new.insert((x, y), 'L');
-        } else {
-            new.insert((x, y), c);
+fn step(map: &Map, next: &mut Map, occupied: i64, ray: bool) {
+    for (y, row) in map.iter().enumerate() {
+        for (x, &c) in row.iter().enumerate() {
+            let n = count_occupied_neighbours(x as i64, y as i64, map, ray);
+            if c == 'L' && n == 0 {
+                next[y][x] = '#';
+            } else if c == '#' && n >= occupied {
+                next[y][x] = 'L';
+            } else {
+                next[y][x] = c;
+            }
         }
     }
-
-    new
 }
 
+#[rustfmt::skip]
 const DIRECTIONS: [(i64, i64); 8] = [
     (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)
 ];
@@ -59,11 +58,16 @@ fn count_occupied_neighbours(x: i64, y: i64, map: &Map, ray: bool) -> i64 {
     let mut count = 0;
     for (dx, dy) in DIRECTIONS.iter() {
         for m in 1.. {
-            match map.get(&(x + dx * m, y + dy * m)) {
-                None => break,
-                Some('L') => break,
-                Some('#') => { count += 1; break; }
-                _ => {},
+            let nx = x + dx * m;
+            let ny = y + dy * m;
+            if nx < 0 || nx >= map[0].len() as i64 || ny < 0 || ny >= map.len() as i64 {
+                break;
+            }
+
+            match map[ny as usize][nx as usize] {
+                'L' => break,
+                '#' => { count += 1; break; }
+                _ => { }
             }
 
             if !ray {
