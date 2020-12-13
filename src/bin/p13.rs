@@ -43,7 +43,7 @@ fn p2(ids: &Vec<u64>) -> u64 {
     let mut product = 1u64;
 
     for (i, v) in ids.iter().enumerate().filter(|&(_, v)| *v != 0) {
-        while (min + i as u64) % * v != 0 {
+        while (min + i as u64) % *v != 0 {
             min += product;
         }
         product *= *v;
