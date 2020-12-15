@@ -24,7 +24,6 @@ fn process(mut last: usize, data: &Vec<usize>, limit: usize) -> usize {
         .iter()
         .enumerate()
         .rev()
-        .skip(1)
         .map(|(a, b)| (*b, a + 1))
         .collect();
 
