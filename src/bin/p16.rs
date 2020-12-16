@@ -80,7 +80,7 @@ fn p2(tickets: &Vec<Ticket>, fields: &Vec<Field>) -> HashMap<String, usize> {
     let mut map: HashMap<String, usize> = HashMap::new();
 
     for _ in 0..fields.len() { // loop once for each field
-        for field in fields { // loop over remaining filds/inices
+        for field in fields { // loop over remaining fields/indices
             if map.contains_key(&field.0) {
                 continue; // already found this field's index
             }
