@@ -1,5 +1,4 @@
 use anyhow::Result;
-use std::collections::HashMap;
 use std::io::{self, Read};
 
 fn main() -> Result<()> {
@@ -20,21 +19,22 @@ fn main() -> Result<()> {
 }
 
 fn process(mut last: usize, data: &Vec<usize>, limit: usize) -> usize {
-    let mut seen: HashMap<usize, usize> = data
-        .iter()
-        .enumerate()
-        .rev()
-        .map(|(a, b)| (*b, a + 1))
-        .collect();
+    let mut seen: Vec<i32> = vec![-1; limit];
 
-    let len = data.len();
+    for (a, b) in data.iter().enumerate().rev() {
+        seen[*b] = (a + 1) as i32
+    }
 
-    for i in len..limit {
-        let prev = *seen.get(&last).unwrap_or(&i);
-        seen.insert(last, i);
-        last = i - prev;
+    let len = data.len() as i32;
+
+    for i in len..limit as i32 {
+        let prev = match seen[last] {
+            -1 => i,
+            _  => seen[last],
+        };
+        seen[last] = i;
+        last = (i - prev) as usize;
     }
 
     last
 }
-
